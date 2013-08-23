@@ -5,7 +5,6 @@ var http = require('http');
 var jsdom = require('jsdom')
 var request = require('request')
 var url = require('url')
-// var users = require('./routes/users');
 var app = express();
 
 app.configure(function () {
@@ -14,6 +13,10 @@ app.configure(function () {
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
+});
+//CHECK ERROR if no doc number provided
+app.get('/docNum/', function(req, res){
+	res.send("Sorry, No Doc number provided!<br> Please enter a Doc Number.");
 });
 
 app.get('/docNum/:docNumber', function(req, res){
@@ -85,12 +88,13 @@ app.get('/docNum/:docNumber', function(req, res){
 		          console.log("Description: ", description);
 		          break;
 		       	case "Subjects":
-		       		var nextSubject = $.trim($(this).parent().next()[0].children[0].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));;
-		       		// var nextsubjectLength = nextSubject.length;
-		       		// while(nextsubjectLength == 0){
-
+		       		// var nextSubject = $(this).parent().next()[0];
+		       		// var nextSubjectString = $.trim(nextSubject.children[0].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));
+		       		// var nextsubjectLength = nextSubjectString.length;
+		       		// if(nextsubjectLength == 0){
+		       		// 	console.log("SubjectsNEXT: ", nextSubject.children[1].children[1].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));
 		       		// }
-		       		console.log("SubjectsNEXT: ", nextSubject.length);
+		       		//console.log("SubjectsNEXT: ", nextSubject.length);
 		          subjects = $.trim($(this).next()[0].children[1].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));
 		          console.log("Subjects: ", subjects);
 		          break;
@@ -113,19 +117,11 @@ app.get('/docNum/:docNumber', function(req, res){
 		    res.writeHead(200, { 'Content-Type': 'application/json' });
 		   	res.write(JSON.stringify(jsonObj));
 		    res.end();
-				// console.log($('title').text());
-				// res.end($('title').text());
+
 			}
 		});
 	});
 });
-// app.get('/users', users.findAllRecords);
-// app.get('/deleteAll', users.delAllRecords);
-// app.post('/register', users.addNewUser);
-// app.get('/home', function(req, res){
-//   res.sendfile('public/views/home.html');
-// });
-//app.post('/signinadmin', express.bodyParser(), users.findAdminUser);
 
 
 http.createServer(app).listen(app.get('port'), function () {
