@@ -50,7 +50,7 @@ app.get('/docNum/:docNumber', function(req, res){
 		    var edition = '';
 		    var publisher = '';
 		    var description = '';
-		    var subjects = '';
+		    var subjects = [];
 		    var contents = '';
 		    var elem = $(".td1");
 		    //res.end(elem);
@@ -59,7 +59,8 @@ app.get('/docNum/:docNumber', function(req, res){
 		      //console.log($.trim($(this).text()));
 		      switch(key){
 		        case "More information":
-		          img = $(this).next()[0].children[0].children[0].src;
+		          img = $(this).next(".td1").children("a").children("img").attr("src");
+		          console.log("IMG: ", img);
 		          break;
 		        case "Call numbers":
 		          // callNum = $(this).next()[0].children[0].href;
@@ -68,34 +69,41 @@ app.get('/docNum/:docNumber', function(req, res){
 		          // console.log(callNum);
 		          break;
 		        case "Author":
-		          author = $.trim($(this).next()[0].children[1].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));
-		          //console.log("Author: ",author);
+		        	author = $.trim($(this).next(".td1").children("a").text());
+		          //author = $.trim($(this).next()[0].children[1].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));
+		          console.log("Author: ",author);
 		          break;
 		        case "Title":
-		          title = $.trim($(this).next()[0].children[1].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));
+		          title = $.trim($(this).next(".td1").children("a").text());
 		          console.log("Title: ", title);
 		          break;
 		        case "Contents":
-		          contents = $.trim($(this).next()[0].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));
+		          contents = $.trim($(this).next(".td1").text());
 		          console.log("Contents: ", contents);
 		          break;
 		        case "Publisher":
-		          publisher = $.trim($(this).next()[0].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));
+		          publisher = $.trim($(this).next(".td1").text());
 		          console.log("Publisher: ", publisher);
 		          break;
 		      	case "Description":
-		          description = $.trim($(this).next()[0].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));
+		          description = $.trim($(this).next(".td1").text());
 		          console.log("Description: ", description);
 		          break;
 		       	case "Subjects":
-		       		// var nextSubject = $(this).parent().next()[0];
-		       		// var nextSubjectString = $.trim(nextSubject.children[0].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));
-		       		// var nextsubjectLength = nextSubjectString.length;
-		       		// if(nextsubjectLength == 0){
-		       		// 	console.log("SubjectsNEXT: ", nextSubject.children[1].children[1].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));
-		       		// }
-		       		//console.log("SubjectsNEXT: ", nextSubject.length);
-		          subjects = $.trim($(this).next()[0].children[1].innerHTML.replace(/[&]nbsp[;]/gi," ").replace(/\n/g,""));
+		       		//Push first subject Item
+		       		subjects.push($.trim($(this).next(".td1").children("a").text()));
+		       		var nextSubject = $(this).parent("tr");
+		       		nextSubject = nextSubject.next("tr");
+
+		       		var nextSubjectString = $.trim(nextSubject.children("td:eq(0)").text());
+		       		var nextsubjectLength = nextSubjectString.length;
+		       		while(nextsubjectLength == 0){
+			       		subjects.push(nextSubject.children("td:eq(1)").text());
+
+			       		nextSubject = nextSubject.next("tr");
+			       		nextSubjectString = $.trim(nextSubject.children("td:eq(0)").text());
+			       		nextsubjectLength = nextSubjectString.length;
+		       		}
 		          console.log("Subjects: ", subjects);
 		          break;
 		      }
@@ -114,7 +122,7 @@ app.get('/docNum/:docNumber', function(req, res){
 		    	}
 		    };
 		    //console.log(jsonObj);
-		    res.writeHead(200, { 'Content-Type': 'application/json' });
+		    res.writeHead(200, { 'Content-Type': 'application/json;charset=utf-8' });
 		   	res.write(JSON.stringify(jsonObj));
 		    res.end();
 
