@@ -15,11 +15,11 @@ app.configure(function () {
   app.use(express.static(path.join(__dirname, 'public')));
 });
 //CHECK ERROR if no doc number provided
-app.get('/docNum/', function(req, res){
+app.get('/docnum/', function(req, res){
 	res.send("Sorry, No Doc number provided!<br> Please enter a Doc Number.");
 });
 
-app.get('/docNum/:docNumber', function(req, res){
+app.get('/docnum/:docNumber', function(req, res){
 	console.log("DOC NUMBER:" ,req.params.docNumber);
 	var docNumber = req.params.docNumber;
 
