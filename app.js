@@ -98,7 +98,7 @@ app.get('/docNum/:docNumber', function(req, res){
 		       		var nextSubjectString = $.trim(nextSubject.children("td:eq(0)").text());
 		       		var nextsubjectLength = nextSubjectString.length;
 		       		while(nextsubjectLength == 0){
-			       		subjects.push(nextSubject.children("td:eq(1)").text());
+			       		subjects.push($.trim(nextSubject.children("td:eq(1)").text()));
 
 			       		nextSubject = nextSubject.next("tr");
 			       		nextSubjectString = $.trim(nextSubject.children("td:eq(0)").text());
@@ -109,8 +109,7 @@ app.get('/docNum/:docNumber', function(req, res){
 		      }
 		    });
 		    //SET JSON
-		    jsonObj = {
-		    	book:{
+		    jsonObj = [{
 		    		img: img,
 		    		call_number: callNum,
 		    		title: title,
@@ -119,8 +118,8 @@ app.get('/docNum/:docNumber', function(req, res){
 		    		description: description,
 						subjects: subjects,
 		    		contents: contents
-		    	}
-		    };
+		    	
+		    }];
 		    //console.log(jsonObj);
 		    res.writeHead(200, { 'Content-Type': 'application/json;charset=utf-8' });
 		   	res.write(JSON.stringify(jsonObj));
